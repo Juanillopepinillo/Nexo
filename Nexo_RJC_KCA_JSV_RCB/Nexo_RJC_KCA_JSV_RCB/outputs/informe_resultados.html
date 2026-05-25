@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Operacion Nexo 5G/6G - Informe tecnico</title>
+  <style>
+    body { font-family: "Segoe UI", Arial, Helvetica, sans-serif; margin: 0; background: #eef2f6; color: #102a43; line-height: 1.65; overflow-wrap: anywhere; }
+    main { max-width: 1120px; margin: 32px auto; background: white; padding: 36px 42px; border: 1px solid #d9e2ec; border-radius: 12px; box-shadow: 0 8px 20px rgba(15,23,42,0.06); }
+    h1, h2, h3 { color: #102a43; }
+    p, li { color: #243b53; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.4rem 0; font-size: 0.94rem; }
+    th, td { border: 1px solid #d9e2ec; padding: 0.55rem 0.6rem; text-align: left; vertical-align: top; }
+    th { background: #edf3f8; color: #1f4e79; text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.04em; }
+    code { background: #f4f7fa; border: 1px solid #d9e2ec; padding: 0.12rem 0.28rem; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <main><h1>Operacion Nexo 5G/6G - Informe tecnico</h1>
+<h2>Resumen</h2>
+<p>Este informe desarrolla el reto Operacion Nexo 5G/6G para Nueva Pangea comparando dos escenarios de alta demanda: un distrito financiero urbano de alta densidad y un festival temporal con congestion extrema de usuarios.
+El escenario A queda limitado por capacidad y recomienda N=4 con tres sectores por sitio.
+El escenario B queda gobernado por densidad de trafico y exige cell splitting hasta la etapa S4.</p>
+<h2>1. Introduccion</h2>
+<p>Las redes moviles modernas deben resolver simultaneamente problemas de cobertura, capacidad e interferencia. En una ciudad inteligente, la conectividad de un distrito financiero no se comporta igual que la de un evento temporal con gran afluencia de usuarios. Por eso el dimensionamiento celular no puede apoyarse en un unico radio de cobertura, sino en una comparacion explicita entre el alcance del enlace y la carga de trafico soportable.</p>
+<p>El objetivo del trabajo es justificar, con base fisica y matematica, la solucion de red mas adecuada en cada escenario y defender por que el radio final de diseno debe adoptarse siempre como el criterio mas restrictivo entre cobertura y capacidad.</p>
+<h2>2. Estado del arte</h2>
+<p>La evolucion hacia LTE y 5G consolida OFDMA, planificacion flexible de recursos y adaptacion dinamica de MCS. En ese contexto, la robustez y la eficiencia espectral dependen directamente de la calidad del canal y del margen radio disponible. Aun asi, el dimensionamiento preliminar sigue descansando sobre herramientas clasicas: balance de enlace, modelos logaritmicos de propagacion y teoria de trafico.</p>
+<p>Los modelos de propagacion permiten traducir una perdida maxima admisible en un radio equivalente de cobertura. Por su parte, Erlang B sigue siendo una herramienta valida para estimar capacidad agregada y probabilidad de bloqueo cuando se desea comparar alternativas de diseno bajo un grado de servicio fijado.</p>
+<h2>3. Metodologia</h2>
+<p>La metodologia replica el orden propuesto en la guia docente: ruido termico, sensibilidad, perdida maxima admisible, radio por cobertura, trafico por usuario, densidad de trafico, capacidad Erlang B y radio por capacidad. El criterio final adopta siempre el menor radio entre cobertura y capacidad.</p>
+<h3>3.1 Expresiones de referencia</h3>
+<ul>
+<li><code>N = -174 + 10 log10(B) + NF</code> para el ruido termico.</li>
+<li><code>Sens = N + SNRreq + Limpl</code> para la sensibilidad de receptor.</li>
+<li><code>Pr = Ptx + Gtx + Grx - Lp - Lotros</code> para el balance de enlace.</li>
+<li><code>Auser = lambda * h</code> para el trafico por usuario en Erlangs.</li>
+<li>Inversion de Erlang B para obtener la capacidad maxima al 2% de bloqueo.</li>
+</ul>
+<h3>3.2 Parametros base</h3>
+<table>
+<thead>
+<tr>
+<th>parametro</th>
+<th>valor</th>
+<th>papel_ingenieril</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Frecuencia de operacion</td>
+<td>1800 MHz</td>
+<td>Comun a ambos escenarios</td>
+</tr>
+<tr>
+<td>Ancho de banda</td>
+<td>20 MHz</td>
+<td>Se usa en el ruido termico</td>
+</tr>
+<tr>
+<td>Potencia TX BS</td>
+<td>43 dBm</td>
+<td>Equivale a 20 W</td>
+</tr>
+<tr>
+<td>Ganancia antena TX</td>
+<td>18 dBi</td>
+<td>Antena de estacion base</td>
+</tr>
+<tr>
+<td>Ganancia antena RX</td>
+<td>0 dBi</td>
+<td>Terminal movil</td>
+</tr>
+<tr>
+<td>Perdidas adicionales</td>
+<td>12 dB</td>
+<td>Cables, conectores y margen</td>
+</tr>
+<tr>
+<td>Figura de ruido</td>
+<td>7 dB</td>
+<td>NF del receptor</td>
+</tr>
+<tr>
+<td>Perdidas de implementacion</td>
+<td>2 dB</td>
+<td>Termino L_impl</td>
+</tr>
+<tr>
+<td>Grado de servicio</td>
+<td>2.00%</td>
+<td>Objetivo de bloqueo para Erlang B</td>
+</tr>
+<tr>
+<td>Canales fisicos totales</td>
+<td>100</td>
+<td>Pool simplificado tipo PRB</td>
+</tr>
+</tbody>
+</table>
+<h3>3.3 Objetivos por escenario</h3>
+<table>
+<thead>
+<tr>
+<th>escenario</th>
+<th>entorno</th>
+<th>modelo</th>
+<th>densidad</th>
+<th>diseno_requerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Escenario A</td>
+<td>Distrito financiero urbano denso</td>
+<td>L_p = 135 + 35 log10(d)</td>
+<td>2500 usuarios activos/km2</td>
+<td>3 sectores por sitio y comparacion N = 3, 4, 7</td>
+</tr>
+<tr>
+<td>Escenario B</td>
+<td>Festival temporal en explanada abierta</td>
+<td>L_p = 120 + 30 log10(d)</td>
+<td>8000 usuarios activos/km2</td>
+<td>Celdas omni y evaluacion de cell splitting</td>
+</tr>
+</tbody>
+</table>
+<h3>3.4 Supuestos de trazabilidad</h3>
+<table>
+<thead>
+<tr>
+<th>supuesto</th>
+<th>valor_aplicado</th>
+<th>justificacion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Area de referencia</td>
+<td>1 km2 en ambos escenarios</td>
+<td>El enunciado pide cuantas celdas harian falta para un area objetivo, pero no fija una superficie concreta. Se normaliza a 1 km2 para comparar densidad celular.</td>
+</tr>
+<tr>
+<td>Reparto de canales en A</td>
+<td>floor(100 / N) por sitio y reparto uniforme entre 3 sectores</td>
+<td>Es la interpretacion mas simple y reproducible cuando el enunciado no define scheduler ni redistribucion dinamica.</td>
+</tr>
+<tr>
+<td>Interferencia co-canal</td>
+<td>2 interferentes dominantes en sectorizado</td>
+<td>Aproximacion docente de primera corona para comparar N = 3, 4 y 7 sin introducir un simulador completo.</td>
+</tr>
+<tr>
+<td>Geometria celular</td>
+<td>Hexagono regular equivalente</td>
+<td>Permite pasar de capacidad por area a radio celular y numero de sitios con una regla geometrica estandar.</td>
+</tr>
+<tr>
+<td>Marco tecnologico</td>
+<td>Lectura LTE/5G sobre formulas simplificadas</td>
+<td>La memoria se redacta como red moderna aunque el dimensionamiento numerico se apoye en balance de enlace y Erlang B.</td>
+</tr>
+</tbody>
+</table>
+<h2>4. Escenarios</h2>
+<h3>4.1 Escenario A - Distrito financiero</h3>
+<p>El distrito financiero representa un entorno urbano denso con 250.0 Erl/km2, una SNR requerida de 15 dB y una arquitectura de tres sectores por sitio. El reto exige comparar N = 3, 4 y 7 para evaluar el equilibrio entre capacidad e interferencia.</p>
+<h3>4.2 Escenario B - Festival global de innovacion</h3>
+<p>El festival representa una explanada abierta con 666.7 Erl/km2, una SNR requerida de 5 dB, celdas omnidireccionales y necesidad de evaluar cell splitting para absorber la demanda.</p>
+<h2>5. Pruebas, calculos y simulaciones</h2>
+<h3>5.1 Cobertura</h3>
+<table>
+<thead>
+<tr>
+<th>scenario</th>
+<th>thermal_noise_dbm</th>
+<th>receiver_sensitivity_dbm</th>
+<th>max_path_loss_db</th>
+<th>coverage_radius_km</th>
+<th>traffic_per_user_erlang</th>
+<th>traffic_density_erlang_km2</th>
+<th>target_area_km2</th>
+<th>propagation_model</th>
+<th>snr_required_db</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A_distrito_financiero</td>
+<td>-93.9897</td>
+<td>-76.9897</td>
+<td>125.99</td>
+<td>0.552793</td>
+<td>0.1</td>
+<td>250</td>
+<td>1</td>
+<td>L_p = 135 + 35 log10(d)</td>
+<td>15</td>
+</tr>
+<tr>
+<td>B_festival_global</td>
+<td>-93.9897</td>
+<td>-86.9897</td>
+<td>135.99</td>
+<td>3.41185</td>
+<td>0.0833333</td>
+<td>666.667</td>
+<td>1</td>
+<td>L_p = 120 + 30 log10(d)</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<h3>5.2 Escenario A - Capacidad e interferencia</h3>
+<table>
+<thead>
+<tr>
+<th>reuse_factor_n</th>
+<th>reuse_ratio_d_over_r</th>
+<th>reuse_distance_km</th>
+<th>sectors_per_site</th>
+<th>channels_per_site</th>
+<th>channels_per_sector</th>
+<th>sector_capacity_erlang</th>
+<th>site_capacity_erlang</th>
+<th>capacity_area_km2</th>
+<th>capacity_radius_km</th>
+<th>coverage_radius_km</th>
+<th>design_radius_km</th>
+<th>design_area_km2</th>
+<th>sectorized_sir_db</th>
+<th>omnidirectional_sir_db</th>
+<th>sectorization_gain_db</th>
+<th>sir_margin_db</th>
+<th>limiting_factor</th>
+<th>sites_for_target_area</th>
+<th>sectors_for_target_area</th>
+<th>recommended</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td>3</td>
+<td>0.492776</td>
+<td>3</td>
+<td>33</td>
+<td>11</td>
+<td>5.84153</td>
+<td>17.5246</td>
+<td>0.0700984</td>
+<td>0.164259</td>
+<td>0.552793</td>
+<td>0.164259</td>
+<td>0.0700984</td>
+<td>13.6889</td>
+<td>8.91773</td>
+<td>4.77121</td>
+<td>-1.31106</td>
+<td>capacity</td>
+<td>15</td>
+<td>45</td>
+<td>No</td>
+</tr>
+<tr>
+<td>4</td>
+<td>3.4641</td>
+<td>0.448365</td>
+<td>3</td>
+<td>25</td>
+<td>8</td>
+<td>3.62705</td>
+<td>10.8812</td>
+<td>0.0435246</td>
+<td>0.129432</td>
+<td>0.552793</td>
+<td>0.129432</td>
+<td>0.0435246</td>
+<td>15.8754</td>
+<td>11.1042</td>
+<td>4.77121</td>
+<td>0.875372</td>
+<td>capacity</td>
+<td>23</td>
+<td>69</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>7</td>
+<td>4.58258</td>
+<td>0.32549</td>
+<td>3</td>
+<td>14</td>
+<td>4</td>
+<td>1.09226</td>
+<td>3.27678</td>
+<td>0.0131071</td>
+<td>0.0710277</td>
+<td>0.552793</td>
+<td>0.0710277</td>
+<td>0.0131071</td>
+<td>20.1285</td>
+<td>15.3573</td>
+<td>4.77121</td>
+<td>5.12854</td>
+<td>capacity</td>
+<td>77</td>
+<td>231</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p>La ganancia de sectorizacion para la opcion recomendada es 4.771 dB respecto a una referencia omnidireccional de primera corona.</p>
+<h3>5.3 Escenario B - Capacidad y cell splitting</h3>
+<table>
+<thead>
+<tr>
+<th>channels_per_cell</th>
+<th>cell_capacity_erlang</th>
+<th>capacity_area_km2</th>
+<th>capacity_radius_km</th>
+<th>coverage_radius_km</th>
+<th>design_radius_km</th>
+<th>design_area_km2</th>
+<th>limiting_factor</th>
+<th>sites_for_target_area</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100</td>
+<td>87.972</td>
+<td>0.131958</td>
+<td>0.225368</td>
+<td>3.41185</td>
+<td>0.225368</td>
+<td>0.131958</td>
+<td>capacity</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>split_stage</th>
+<th>radius_km</th>
+<th>area_km2</th>
+<th>cells_per_original_footprint</th>
+<th>capacity_density_erlang_km2</th>
+<th>supported_users_km2</th>
+<th>demand_users_km2</th>
+<th>meets_demand</th>
+<th>sites_for_target_area</th>
+<th>recommended</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>3.41185</td>
+<td>30.2435</td>
+<td>1</td>
+<td>2.90879</td>
+<td>34.9055</td>
+<td>8000</td>
+<td>No</td>
+<td>1</td>
+<td>No</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1.70593</td>
+<td>7.56087</td>
+<td>4</td>
+<td>11.6352</td>
+<td>139.622</td>
+<td>8000</td>
+<td>No</td>
+<td>1</td>
+<td>No</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0.852963</td>
+<td>1.89022</td>
+<td>16</td>
+<td>46.5407</td>
+<td>558.488</td>
+<td>8000</td>
+<td>No</td>
+<td>1</td>
+<td>No</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.426481</td>
+<td>0.472555</td>
+<td>64</td>
+<td>186.163</td>
+<td>2233.95</td>
+<td>8000</td>
+<td>No</td>
+<td>3</td>
+<td>No</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0.213241</td>
+<td>0.118139</td>
+<td>256</td>
+<td>744.65</td>
+<td>8935.81</td>
+<td>8000</td>
+<td>Si</td>
+<td>9</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.10662</td>
+<td>0.0295347</td>
+<td>1024</td>
+<td>2978.6</td>
+<td>35743.2</td>
+<td>8000</td>
+<td>Si</td>
+<td>34</td>
+<td>No</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0.0533102</td>
+<td>0.00738366</td>
+<td>4096</td>
+<td>11914.4</td>
+<td>142973</td>
+<td>8000</td>
+<td>Si</td>
+<td>136</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h3>5.4 Validacion numerica de consistencia</h3>
+<table>
+<thead>
+<tr>
+<th>control</th>
+<th>resultado</th>
+<th>criterio</th>
+<th>valido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ruido termico comun</td>
+<td>-93.990 dBm</td>
+<td>-93.990 dBm aproximados para 20 MHz y NF=7 dB</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Sensibilidad escenario A</td>
+<td>-76.990 dBm</td>
+<td>N + 15 dB + 2 dB</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Sensibilidad escenario B</td>
+<td>-86.990 dBm</td>
+<td>N + 5 dB + 2 dB</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Factibilidad radio N=3</td>
+<td>Margen SIR = -1.311 dB</td>
+<td>Debe ser negativo para descartar N=3</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Factibilidad radio N=4</td>
+<td>Margen SIR = 0.875 dB</td>
+<td>Debe ser positivo para aceptar N=4</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Factor limitante en A</td>
+<td>capacity</td>
+<td>Debe dominar capacidad</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Factor limitante en B</td>
+<td>capacity</td>
+<td>Debe dominar capacidad</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Split S3</td>
+<td>Cumple demanda = False</td>
+<td>Debe ser insuficiente</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Split S4</td>
+<td>Cumple demanda = True</td>
+<td>Debe ser la primera etapa viable</td>
+<td>Si</td>
+</tr>
+</tbody>
+</table>
+<h2>6. Resultados</h2>
+<p>En el distrito financiero, el radio por cobertura es 0.553 km, pero el radio recomendado cae a 0.129 km por limitacion de capacidad.
+En el festival, la cobertura teorica alcanza 3.412 km mientras que la capacidad sin splitting solo sostiene 0.225 km.
+El escenario A recomienda N=4 y el escenario B recomienda cell splitting hasta S4.</p>
+<h2>7. Discusion</h2>
+<p>La comparacion entre escenarios confirma que el diseno celular no puede justificarse solo por cobertura. En el distrito financiero la sectorizacion y la reutilizacion permiten controlar la interferencia, pero el parametro dominante sigue siendo la capacidad agregada por sitio. Un N muy bajo deja poco margen radio, mientras que un N muy alto penaliza severamente la capacidad. Por eso N=4 es la primera opcion tecnicamente equilibrada.</p>
+<p>Ademas, la comparacion entre SIR sectorizada y SIR omnidireccional muestra una mejora de 4.771 dB para la opcion recomendada, lo que refuerza la necesidad de sectorizar el sitio en el escenario urbano denso.</p>
+<p>En el festival la situacion cambia por completo. La propagacion abierta y la menor SNR requerida dan un radio de cobertura muy amplio, pero eso no aporta una solucion real porque la limitacion dominante es la densidad de trafico. La unica estrategia coherente dentro del marco del enunciado es el cell splitting, que incrementa la densidad de celdas hasta superar la demanda objetivo.</p>
+<h2>8. Conclusiones</h2>
+<p>La solucion adoptada para el escenario A es N=4 con tres sectores por sitio, porque es la primera alternativa que supera el umbral radio y mantiene una capacidad razonable por sitio.
+La solucion adoptada para el escenario B es cell splitting hasta S4, porque la densidad de usuarios domina claramente sobre la cobertura y obliga a reducir el area de servicio por celda.</p>
+<h3>8.1 Nueva Pangea 2030</h3>
+<p>Si la densidad de usuarios creciera o se demandaran nuevos servicios como IoT masivo, movilidad conectada o 5G SA, la evolucion natural del diseno pasaria por small cells, mas espectro, beamforming, slicing y edge computing.</p>
+<h2>9. Cumplimiento del enunciado</h2>
+<table>
+<thead>
+<tr>
+<th>bloque_enunciado</th>
+<th>evidencia</th>
+<th>cumple</th>
+<th>comentario</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Introduccion y estado del arte</td>
+<td>Incluido en la web y en el informe tecnico</td>
+<td>Si</td>
+<td>Se incorporan contexto LTE/5G, OFDMA, MCS, propagacion y capacidad.</td>
+</tr>
+<tr>
+<td>Metodologia reproducible</td>
+<td>Ruido, sensibilidad, Lmax, cobertura, trafico, Erlang B y radio final</td>
+<td>Si</td>
+<td>La secuencia de calculo sigue el orden exacto marcado en el enunciado.</td>
+</tr>
+<tr>
+<td>Escenario A con reutilizacion y sectorizacion</td>
+<td>N=4, 3 sectores y comparacion frente a omni</td>
+<td>Si</td>
+<td>Se cuantifican SIR sectorizada, SIR omni y ganancia por sectorizacion.</td>
+</tr>
+<tr>
+<td>Escenario B con cell splitting</td>
+<td>Primera etapa viable: S4</td>
+<td>Si</td>
+<td>Se evalua la secuencia completa de splitting hasta satisfacer la demanda.</td>
+</tr>
+<tr>
+<td>Comparacion cobertura frente a capacidad</td>
+<td>A: 0.129 km; B: 0.225 km</td>
+<td>Si</td>
+<td>Ambos escenarios muestran el criterio limitante y el radio final de diseno.</td>
+</tr>
+<tr>
+<td>Numero de celdas o sitios en area objetivo</td>
+<td>A: 23 sitios/1 km2; B: 9 celdas/1 km2</td>
+<td>Si</td>
+<td>El area objetivo se normaliza a 1 km2 por no venir fijada en la guia docente.</td>
+</tr>
+<tr>
+<td>Figura resumen final</td>
+<td>Incluida en la web y en assets/figures</td>
+<td>Si</td>
+<td>Sintetiza las decisiones de diseno para ambos escenarios.</td>
+</tr>
+</tbody>
+</table>
+<h2>10. Referencias bibliograficas</h2>
+<ol>
+<li>T. S. Rappaport, Wireless Communications: Principles and Practice, 2nd ed., Prentice Hall.</li>
+<li>A. Goldsmith, Wireless Communications, Cambridge University Press.</li>
+<li>S. Sesia, I. Toufik y M. Baker, LTE - The UMTS Long Term Evolution, Wiley.</li>
+<li>E. Dahlman, S. Parkvall y J. Skold, 5G NR: The Next Generation Wireless Access Technology, Academic Press.</li>
+</ol></main>
+</body>
+</html>

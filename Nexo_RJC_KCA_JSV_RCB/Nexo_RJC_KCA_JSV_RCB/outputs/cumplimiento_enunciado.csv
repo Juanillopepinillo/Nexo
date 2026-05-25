@@ -1,0 +1,8 @@
+bloque_enunciado,evidencia,cumple,comentario
+Introduccion y estado del arte,Incluido en la web y en el informe tecnico,Si,"Se incorporan contexto LTE/5G, OFDMA, MCS, propagacion y capacidad."
+Metodologia reproducible,"Ruido, sensibilidad, Lmax, cobertura, trafico, Erlang B y radio final",Si,La secuencia de calculo sigue el orden exacto marcado en el enunciado.
+Escenario A con reutilizacion y sectorizacion,"N=4, 3 sectores y comparacion frente a omni",Si,"Se cuantifican SIR sectorizada, SIR omni y ganancia por sectorizacion."
+Escenario B con cell splitting,Primera etapa viable: S4,Si,Se evalua la secuencia completa de splitting hasta satisfacer la demanda.
+Comparacion cobertura frente a capacidad,A: 0.129 km; B: 0.225 km,Si,Ambos escenarios muestran el criterio limitante y el radio final de diseno.
+Numero de celdas o sitios en area objetivo,A: 23 sitios/1 km2; B: 9 celdas/1 km2,Si,El area objetivo se normaliza a 1 km2 por no venir fijada en la guia docente.
+Figura resumen final,Incluida en la web y en assets/figures,Si,Sintetiza las decisiones de diseno para ambos escenarios.

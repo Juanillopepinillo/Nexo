@@ -1,0 +1,10 @@
+[project]
+name = "operacion-nexo-rjc-kca-jsv-rcb"
+version = "1.0.0"
+description = "Entrega web y calculos reproducibles para Operacion Nexo 5G/6G."
+requires-python = ">=3.10"
+dependencies = [
+  "pandas>=2.0",
+  "matplotlib>=3.7",
+  "Markdown>=3.5",
+]

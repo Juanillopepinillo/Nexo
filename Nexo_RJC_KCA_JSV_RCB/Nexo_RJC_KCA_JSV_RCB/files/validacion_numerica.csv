@@ -1,0 +1,10 @@
+control,resultado,criterio,valido
+Ruido termico comun,-93.990 dBm,-93.990 dBm aproximados para 20 MHz y NF=7 dB,Si
+Sensibilidad escenario A,-76.990 dBm,N + 15 dB + 2 dB,Si
+Sensibilidad escenario B,-86.990 dBm,N + 5 dB + 2 dB,Si
+Factibilidad radio N=3,Margen SIR = -1.311 dB,Debe ser negativo para descartar N=3,Si
+Factibilidad radio N=4,Margen SIR = 0.875 dB,Debe ser positivo para aceptar N=4,Si
+Factor limitante en A,capacity,Debe dominar capacidad,Si
+Factor limitante en B,capacity,Debe dominar capacidad,Si
+Split S3,Cumple demanda = False,Debe ser insuficiente,Si
+Split S4,Cumple demanda = True,Debe ser la primera etapa viable,Si

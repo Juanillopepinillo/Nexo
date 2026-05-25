@@ -1,0 +1,2 @@
+scenario,thermal_noise_dbm,receiver_sensitivity_dbm,max_path_loss_db,coverage_radius_km,traffic_per_user_erlang,traffic_density_erlang_km2,target_area_km2,propagation_model,snr_required_db
+B_festival_global,-93.98970004336019,-86.98970004336019,135.9897000433602,3.4118505659072476,0.08333333333333333,666.6666666666666,1.0,L_p = 120 + 30 log10(d),5.0

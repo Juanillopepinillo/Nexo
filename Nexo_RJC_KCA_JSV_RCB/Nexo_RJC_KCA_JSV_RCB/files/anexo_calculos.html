@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Operacion Nexo 5G/6G - Anexo de calculos</title>
+  <style>
+    body { font-family: "Segoe UI", Arial, Helvetica, sans-serif; margin: 0; background: #eef2f6; color: #102a43; line-height: 1.65; overflow-wrap: anywhere; }
+    main { max-width: 1120px; margin: 32px auto; background: white; padding: 36px 42px; border: 1px solid #d9e2ec; border-radius: 12px; box-shadow: 0 8px 20px rgba(15,23,42,0.06); }
+    h1, h2, h3 { color: #102a43; }
+    p, li { color: #243b53; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.4rem 0; font-size: 0.94rem; }
+    th, td { border: 1px solid #d9e2ec; padding: 0.55rem 0.6rem; text-align: left; vertical-align: top; }
+    th { background: #edf3f8; color: #1f4e79; text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.04em; }
+    code { background: #f4f7fa; border: 1px solid #d9e2ec; padding: 0.12rem 0.28rem; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <main><h1>Operacion Nexo 5G/6G - Anexo de calculos</h1>
+<h2>Formulas base</h2>
+<ul>
+<li><code>N = -174 + 10 log10(B) + NF</code></li>
+<li><code>Sens = N + SNRreq + Limpl</code></li>
+<li><code>Lmax = Ptx + Gtx + Grx - Lotros - Sens</code></li>
+<li><code>Auser = llamadas_por_hora * duracion_media_horas</code></li>
+</ul>
+<h2>Escenario A - Distrito financiero</h2>
+<ol>
+<li>Ruido termico: <code>N = -93.990 dBm</code>.</li>
+<li>Sensibilidad: <code>Sens = -76.990 dBm</code>.</li>
+<li>Perdida maxima admisible: <code>Lmax = 125.990 dB</code>.</li>
+<li>Radio por cobertura: <code>Rcov = 0.553 km</code>.</li>
+<li>Trafico por usuario: <code>Auser = 0.100 Erl</code>.</li>
+<li>Densidad de trafico: <code>Akm2 = 250.000 Erl/km2</code>.</li>
+<li>Reuso recomendado: <code>N = 4</code> con <code>Rdesign = 0.129 km</code>.</li>
+</ol>
+<h2>Escenario B - Festival global</h2>
+<ol>
+<li>Ruido termico: <code>N = -93.990 dBm</code>.</li>
+<li>Sensibilidad: <code>Sens = -86.990 dBm</code>.</li>
+<li>Perdida maxima admisible: <code>Lmax = 135.990 dB</code>.</li>
+<li>Radio por cobertura: <code>Rcov = 3.412 km</code>.</li>
+<li>Radio por capacidad sin splitting: <code>Rcap = 0.225 km</code>.</li>
+<li>Split recomendado: <code>S4</code> con <code>R = 0.213 km</code>.</li>
+<li>Sitios en 1 km2 tras splitting: <code>9</code>.</li>
+</ol>
+<h2>Validacion numerica de consistencia</h2>
+<table>
+<thead>
+<tr>
+<th>control</th>
+<th>resultado</th>
+<th>criterio</th>
+<th>valido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ruido termico comun</td>
+<td>-93.990 dBm</td>
+<td>-93.990 dBm aproximados para 20 MHz y NF=7 dB</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Sensibilidad escenario A</td>
+<td>-76.990 dBm</td>
+<td>N + 15 dB + 2 dB</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Sensibilidad escenario B</td>
+<td>-86.990 dBm</td>
+<td>N + 5 dB + 2 dB</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Factibilidad radio N=3</td>
+<td>Margen SIR = -1.311 dB</td>
+<td>Debe ser negativo para descartar N=3</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Factibilidad radio N=4</td>
+<td>Margen SIR = 0.875 dB</td>
+<td>Debe ser positivo para aceptar N=4</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Factor limitante en A</td>
+<td>capacity</td>
+<td>Debe dominar capacidad</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Factor limitante en B</td>
+<td>capacity</td>
+<td>Debe dominar capacidad</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Split S3</td>
+<td>Cumple demanda = False</td>
+<td>Debe ser insuficiente</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Split S4</td>
+<td>Cumple demanda = True</td>
+<td>Debe ser la primera etapa viable</td>
+<td>Si</td>
+</tr>
+</tbody>
+</table></main>
+</body>
+</html>
