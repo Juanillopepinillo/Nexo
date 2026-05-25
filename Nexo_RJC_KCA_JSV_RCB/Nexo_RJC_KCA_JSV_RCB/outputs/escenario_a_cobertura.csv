@@ -1,2 +1,0 @@
-scenario,thermal_noise_dbm,receiver_sensitivity_dbm,max_path_loss_db,coverage_radius_km,traffic_per_user_erlang,traffic_density_erlang_km2,target_area_km2,propagation_model,snr_required_db
-A_distrito_financiero,-93.98970004336019,-76.98970004336019,125.98970004336019,0.5527934116889407,0.1,250.0,1.0,L_p = 135 + 35 log10(d),15.0

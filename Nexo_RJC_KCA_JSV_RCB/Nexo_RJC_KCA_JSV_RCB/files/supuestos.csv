@@ -1,6 +1,0 @@
-supuesto,valor_aplicado,justificacion
-Area de referencia,1 km2 en ambos escenarios,"El enunciado pide cuantas celdas harian falta para un area objetivo, pero no fija una superficie concreta. Se normaliza a 1 km2 para comparar densidad celular."
-Reparto de canales en A,floor(100 / N) por sitio y reparto uniforme entre 3 sectores,Es la interpretacion mas simple y reproducible cuando el enunciado no define scheduler ni redistribucion dinamica.
-Interferencia co-canal,2 interferentes dominantes en sectorizado,"Aproximacion docente de primera corona para comparar N = 3, 4 y 7 sin introducir un simulador completo."
-Geometria celular,Hexagono regular equivalente,Permite pasar de capacidad por area a radio celular y numero de sitios con una regla geometrica estandar.
-Marco tecnologico,Lectura LTE/5G sobre formulas simplificadas,La memoria se redacta como red moderna aunque el dimensionamiento numerico se apoye en balance de enlace y Erlang B.
