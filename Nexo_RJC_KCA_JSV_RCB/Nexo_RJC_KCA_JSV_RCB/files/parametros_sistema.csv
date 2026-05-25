@@ -1,0 +1,11 @@
+parametro,valor,papel_ingenieril
+Frecuencia de operacion,1800 MHz,Comun a ambos escenarios
+Ancho de banda,20 MHz,Se usa en el ruido termico
+Potencia TX BS,43 dBm,Equivale a 20 W
+Ganancia antena TX,18 dBi,Antena de estacion base
+Ganancia antena RX,0 dBi,Terminal movil
+Perdidas adicionales,12 dB,"Cables, conectores y margen"
+Figura de ruido,7 dB,NF del receptor
+Perdidas de implementacion,2 dB,Termino L_impl
+Grado de servicio,2.00%,Objetivo de bloqueo para Erlang B
+Canales fisicos totales,100,Pool simplificado tipo PRB
